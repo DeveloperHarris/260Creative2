@@ -37,18 +37,30 @@ class LeagueStats extends Component {
   };
 
   render() {
-    const { name, username } = this.state;
+    const {
+      name,
+      username,
+      profileIconId,
+      summonerLevel,
+      revisionDate,
+      id
+    } = this.state;
 
     return (
       <main className="container">
-        <img src="" />
         <h4 className="h4">Enter League of Legends Summoner Name</h4>
         <Form
           onSubmit={this.handleOnSubmit}
           onChange={this.handleOnChange}
           currentValue={username}
         />
-        <Profile name={name} />
+        <Profile
+          name={name}
+          profileIconId={profileIconId}
+          summonerLevel={summonerLevel}
+          revisionDate={revisionDate}
+          id={id}
+        />
       </main>
     );
   }
