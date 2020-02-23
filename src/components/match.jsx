@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 const championRef = require("../reference/champion.json");
+const queueRef = require("../reference/queues.json");
+const spellRef = require("../reference/summoner.json");
 const utils = require("./utils");
 
 class Match extends Component {
@@ -32,11 +34,21 @@ class Match extends Component {
     } else return this.state.matchData.teams[1].win;
   };
 
+  getOutcome = accountId => {
+    if (this.state.matchData) {
+      let result = this.matchWin(accountId);
+      if (this.state.matchData.gameDuration < 300) return "Remake";
+      if (result === "Win") return "Victory";
+      else if (result === "Fail") return "Defeat";
+    } else return null;
+  };
+
   cardClass = () => {
     let classes = "card-body ";
     if (this.state.matchData) {
-      let result = this.matchWin(this.props.accountId);
-      if (result === "Win") classes += "win-color";
+      let result = this.matchWin(this.props.accountId); // could potentially optimize this by only calculating it once
+      if (this.state.matchData.gameDuration < 300) classes += "remake-color";
+      else if (result === "Win") classes += "win-color";
       else if (result === "Fail") classes += "fail-color";
     }
     return classes;
@@ -65,6 +77,7 @@ class Match extends Component {
   };
 
   getTeamsIdentities = () => {
+    // refactor this to not have two arrays, makes it harder
     let team1 = [];
     let team2 = [];
     for (let participant of this.state.matchData.participantIdentities) {
@@ -108,6 +121,162 @@ class Match extends Component {
     });
   };
 
+  getQueueType = queueId => {
+    let result;
+    for (let queueType of queueRef) {
+      if (queueType.queueId === queueId) {
+        result = queueType.description.substring(
+          0,
+          queueType.description.length - 5
+        );
+        break;
+      }
+    }
+
+    if (result.includes("5v5")) result = result.substring(3);
+
+    return result;
+  };
+
+  getKDA = accountId => {
+    if (!this.state.matchData) return null;
+
+    let participants = this.state.matchData.participants;
+    let teamsIdentities = this.state.matchData.participantIdentities;
+
+    let participantId = "";
+
+    let kills, deaths, assists;
+
+    for (let participant of teamsIdentities) {
+      if (participant.player.accountId === accountId) {
+        participantId = participant.participantId;
+      }
+    }
+
+    for (let participant of participants) {
+      if (participant.participantId === participantId) {
+        kills = participant.stats.kills;
+        deaths = participant.stats.deaths;
+        assists = participant.stats.assists;
+      }
+    }
+
+    let kdaScore =
+      deaths === 0
+        ? `Perfect KDA`
+        : `${Math.round(((kills + assists) / deaths + Number.EPSILON) * 100) /
+            100} KDA`;
+
+    return (
+      <React.Fragment>
+        <div>{`${kills} / ${deaths} / ${assists} `}</div>
+        <div>{kdaScore}</div>
+      </React.Fragment>
+    );
+  };
+
+  getStats = accountId => {
+    if (!this.state.matchData) return null;
+
+    let participants = this.state.matchData.participants;
+    let teamsIdentities = this.state.matchData.participantIdentities;
+
+    let participantId = "";
+
+    let champLevel, totalMinionsKilled, visionScore;
+
+    for (let participant of teamsIdentities) {
+      if (participant.player.accountId === accountId) {
+        participantId = participant.participantId;
+      }
+    }
+
+    for (let participant of participants) {
+      if (participant.participantId === participantId) {
+        champLevel = participant.stats.champLevel;
+        totalMinionsKilled =
+          participant.stats.totalMinionsKilled +
+          participant.stats.neutralMinionsKilled;
+        visionScore = participant.stats.visionScore;
+      }
+    }
+
+    return (
+      <React.Fragment>
+        <p className="level">Level: {champLevel}</p>
+        <p>
+          {totalMinionsKilled} (
+          {Math.round(
+            (totalMinionsKilled / (this.state.matchData.gameDuration / 60.0) +
+              Number.EPSILON) *
+              10
+          ) / 10}
+          ) CS
+        </p>
+        <p>Vision: {visionScore}</p>
+      </React.Fragment>
+    );
+  };
+
+  getSummonerSpells = accountId => {
+    if (!this.state.matchData) return null;
+
+    let participants = this.state.matchData.participants;
+    let teamsIdentities = this.state.matchData.participantIdentities;
+
+    let participantId = "";
+
+    let sum1, sum2;
+
+    for (let participant of teamsIdentities) {
+      if (participant.player.accountId === accountId) {
+        participantId = participant.participantId;
+      }
+    }
+
+    for (let participant of participants) {
+      if (participant.participantId === participantId) {
+        sum1 = participant.spell1Id;
+        sum2 = participant.spell2Id;
+      }
+    }
+
+    let sum1Name = this.getSpellName(sum1);
+    let sum2Name = this.getSpellName(sum2);
+
+    return (
+      <React.Fragment>
+        <img
+          src={
+            `http://ddragon.leagueoflegends.com/cdn/10.4.1/img/spell/` +
+            sum1Name +
+            `.png`
+          }
+          alt={`Summoner Spell: ` + sum1Name}
+          height="25rem"
+        />
+        <img
+          src={
+            `http://ddragon.leagueoflegends.com/cdn/10.4.1/img/spell/` +
+            sum2Name +
+            `.png`
+          }
+          alt={`Summoner Spell: ` + sum2Name}
+          height="25rem"
+        />
+      </React.Fragment>
+    );
+  };
+
+  getSpellName = id => {
+    let spells = spellRef.data;
+    for (let summoner in spells) {
+      console.log(spells[summoner].key, id);
+      if (spells[summoner].key == id) return spells[summoner].id;
+    }
+  };
+
   componentDidMount = (props, state) => {
     if (this.props.data) {
       this.getMatchData(this.props.gameId);
@@ -137,21 +306,37 @@ class Match extends Component {
       <div className="card">
         <div className={this.cardClass()}>
           <div className="base-game-info">
-            <img
-              src={`http://ddragon.leagueoflegends.com/cdn/10.4.1/img/champion/${championName}.png`} // fix it so it doesn't call undefined first run through
-              alt={`Icon of ${championName}`}
-              height="50rem"
-            />
-            {lane !== "NONE" ? (
+            <div className="preview">
+              <p className="queue-type">{this.getQueueType(queue)}</p>
+              <p className="time-since">{utils.timeSince(timestamp)}</p>
+              <p className="outcome">{this.getOutcome(this.props.accountId)}</p>
+              <p className="game-length">
+                {Math.round(this.state.matchData.gameDuration / 60.0)}m
+              </p>
+            </div>
+            <div className="images">
               <img
-                src={this.getLaneImage(lane)}
-                alt={`Position:${lane}`}
+                src={`http://ddragon.leagueoflegends.com/cdn/10.4.1/img/champion/${championName}.png`} // fix it so it doesn't call undefined first run through
+                alt={`Icon of ${championName}`}
                 height="50rem"
               />
-            ) : null}
-            <p className="time-since">{utils.timeSince(timestamp)}</p>
+              {lane !== "NONE" ? (
+                <img
+                  src={this.getLaneImage(lane)}
+                  alt={`Position:${lane}`}
+                  height="50rem"
+                />
+              ) : null}
+            </div>
+            <div className="spells-runes">
+              {this.getSummonerSpells(this.props.accountId)}
+            </div>
           </div>
-          <div className="detailed-game-info">
+          <div className="game-stats">
+            <div className="kda">{this.getKDA(this.props.accountId)}</div>
+            <div className="stats">{this.getStats(this.props.accountId)}</div>
+          </div>
+          <div className="detailed-team-info">
             <div className="champions">
               <div className="team1">{this.getTeamHTML(0)}</div>
               <div className="team2">{this.getTeamHTML(1)}</div>

@@ -17,6 +17,10 @@ code {
     monospace;
 }
 
+p {
+  margin: 0px !important;
+}
+
 .github-link {
   display: block;
   margin-left: auto;
@@ -34,7 +38,7 @@ form > button {
     justify-content: center;
   }
   #root {
-    width: 500px;
+    width: 550px;
   }
 }
 
@@ -44,18 +48,59 @@ form > button {
 
 .card-body {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  padding: 0.25rem 0.5rem !important;
 }
 
 .base-game-info {
-  width: 5rem;
+  width: 8rem;
+  display: flex;
+}
+
+.preview {
+  text-align: center;
+  margin-right: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.queue-type {
+  font-size: 0.8rem;
+}
+
+.time-since {
+  font-size: 0.7rem;
+}
+
+.outcome {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+.game-length {
+  font-size: 0.6rem;
+}
+
+.spells-runes {
+  margin-top: -2px;
+}
+
+.game-stats {
+  display: flex;
+  justify-content: space-evenly;
   flex-grow: 1;
 }
 
-.detailed-game-info {
+.stats {
+  margin-left: 7px;
+}
+
+.level {
+  font-size: 0.7rem;
+}
+
+.detailed-team-info {
   margin-left: 1rem;
   width: 10rem;
-  flex-grow: 2;
 }
 
 .win-color {
@@ -64,6 +109,10 @@ form > button {
 
 .fail-color {
   background-color: #e69598;
+}
+
+.remake-color {
+  background-color: lightgray;
 }
 
 .champions {
