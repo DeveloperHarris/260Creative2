@@ -1,7 +1,14 @@
-import React, { Component } from "react";
+import React from "react";
 
 const profile = props => {
-  const { profileIconId, name, summonerLevel, revisionDate, id } = props;
+  const {
+    profileIconId,
+    name,
+    summonerLevel,
+    revisionDate,
+    id,
+    accountId
+  } = props;
 
   if (!name) return null;
 
@@ -20,7 +27,8 @@ const profile = props => {
       />
       <p className="p">Level {summonerLevel}</p>
       <p className="p">Last Seen Online: {date.toDateString()}</p>
-      <p className="p">ID: {id}</p>
+      {/* <p className="p">ID: {id}</p>
+      <p className="p">AccountID: {accountId}</p> */}
     </React.Fragment>
   );
 };

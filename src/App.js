@@ -8,7 +8,12 @@ function App() {
   return (
     <React.Fragment>
       <LeagueStats />
-      <a href="https://github.com/DeveloperHarris/260Creative2">Github</a>
+      <a
+        className="github-link"
+        href="https://github.com/DeveloperHarris/260Creative2"
+      >
+        Github
+      </a>
     </React.Fragment>
   );
 }

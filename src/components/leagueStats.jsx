@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Form from "./form";
 import Profile from "./profile";
+import MatchHistory from "./matchHistory";
 
 class LeagueStats extends Component {
   state = {
@@ -11,19 +12,14 @@ class LeagueStats extends Component {
     profileIconId: "",
     puuid: "",
     revisionDate: "",
-    summonerLevel: ""
+    summonerLevel: "",
+    matchHistory: ""
   };
 
   handleOnSubmit = event => {
     event.preventDefault();
 
-    fetch(`/summoner/${this.state.username}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    })
+    fetch(`/summoner/${this.state.username}`)
       .then(response => response.json())
       .then(data => {
         this.setState(data["json"]);
@@ -43,7 +39,8 @@ class LeagueStats extends Component {
       profileIconId,
       summonerLevel,
       revisionDate,
-      id
+      id,
+      accountId
     } = this.state;
 
     return (
@@ -60,7 +57,9 @@ class LeagueStats extends Component {
           summonerLevel={summonerLevel}
           revisionDate={revisionDate}
           id={id}
+          accountId={accountId}
         />
+        <MatchHistory accountId={accountId} />
       </main>
     );
   }
