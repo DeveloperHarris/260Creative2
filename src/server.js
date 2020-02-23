@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
 const fetch = require("node-fetch");
+const path = require("path");
+
+app.use(express.static("../build"));
 
 app.get("/summoner/:username", (req, res) => {
   const APIKEY = "RGAPI-3d2686c1-a79d-41f8-85bd-a149125c3120";
@@ -16,6 +19,10 @@ app.get("/summoner/:username", (req, res) => {
     .catch(err => {
       console.log(err);
     });
+});
+
+app.use(function(req, res) {
+  res.sendFile(path.join(__dirname, "../build/index.html"));
 });
 
 console.log("Running Node Express");
