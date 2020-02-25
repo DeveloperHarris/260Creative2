@@ -23,13 +23,21 @@ class Match extends Component {
   };
 
   matchWin = accountId => {
+    if (!this.state.matchData) return null;
     let participantId = "";
+    console.log("1");
     let participantIdentities = this.state.matchData.participantIdentities;
+    console.log("2");
     for (let participant in participantIdentities) {
+      console.log("3");
       if (participantIdentities[participant].player.accountId === accountId)
-        participantId = participantIdentities[participant].participantId;
+        console.log("4");
+      participantId = participantIdentities[participant].participantId;
+      console.log("5");
     }
+    console.log(this.state.matchData.teams);
     if (participantId < 6) {
+      console.log("6");
       return this.state.matchData.teams[0].win;
     } else return this.state.matchData.teams[1].win;
   };

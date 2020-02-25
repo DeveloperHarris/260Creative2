@@ -12,7 +12,7 @@ class MatchHistory extends Component {
     if (!matchHistory) return null;
     return (
       <React.Fragment>
-        {matchHistory.matches.slice(0, 20).map(match => (
+        {matchHistory.matches.slice(0, 10).map(match => (
           <Match key={match.gameId} data={match} accountId={accountId} />
         ))}
       </React.Fragment>
