@@ -5,7 +5,7 @@ const path = require("path");
 
 app.use(express.static("../build"));
 
-const APIKEY = "RGAPI-3d2686c1-a79d-41f8-85bd-a149125c3120";
+const APIKEY = "RGAPI-4b8205f3-f625-410e-9f7a-75992a697165";
 
 app.get("/summoner/:username", (req, res) => {
   const summonerURL =
