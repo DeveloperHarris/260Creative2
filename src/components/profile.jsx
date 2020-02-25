@@ -1,14 +1,7 @@
 import React from "react";
 
 const profile = props => {
-  const {
-    profileIconId,
-    name,
-    summonerLevel,
-    revisionDate,
-    id,
-    accountId
-  } = props;
+  const { profileIconId, name, summonerLevel, revisionDate } = props;
 
   if (!name) return null;
 
@@ -19,6 +12,7 @@ const profile = props => {
       <h4 className="h4 mt-4">{name}</h4>
       <img
         height="100vh"
+        alt="Profile Icon"
         src={
           "http://ddragon.leagueoflegends.com/cdn/10.4.1/img/profileicon/" +
           profileIconId +
@@ -27,8 +21,6 @@ const profile = props => {
       />
       <p className="p">Level {summonerLevel}</p>
       <p className="p">Last Seen Online: {date.toDateString()}</p>
-      {/* <p className="p">ID: {id}</p>
-      <p className="p">AccountID: {accountId}</p> */}
     </React.Fragment>
   );
 };

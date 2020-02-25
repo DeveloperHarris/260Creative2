@@ -18,7 +18,7 @@ export function timeSince(timeStamp) {
       .match(/ [a-zA-Z]*/)[0]
       .replace(" ", "");
     let year =
-      date.getFullYear() == now.getFullYear() ? "" : " " + date.getFullYear();
+      date.getFullYear() === now.getFullYear() ? "" : " " + date.getFullYear();
     return day + " " + month + year;
   }
 }

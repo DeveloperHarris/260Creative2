@@ -272,7 +272,6 @@ class Match extends Component {
   getSpellName = id => {
     let spells = spellRef.data;
     for (let summoner in spells) {
-      console.log(spells[summoner].key, id);
       if (spells[summoner].key == id) return spells[summoner].id;
     }
   };
@@ -284,18 +283,7 @@ class Match extends Component {
   };
 
   render() {
-    const {
-      champion,
-      gameId,
-      lane,
-      platformId,
-      queue,
-      role,
-      season,
-      timestamp
-    } = this.props.data;
-
-    const { accountid } = this.props;
+    const { champion, lane, queue, timestamp } = this.props.data;
 
     let championName = "";
     if (this.state.matchData) {
